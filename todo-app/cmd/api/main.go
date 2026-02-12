@@ -1,9 +1,12 @@
 package main
 
 import (
+	"context"
 	"log"
 	"net/http"
 
+	"github.com/DiptanshuMahakud/ToDo-Go/internal/config"
+	"github.com/DiptanshuMahakud/ToDo-Go/internal/db"
 	"github.com/DiptanshuMahakud/ToDo-Go/internal/todo"
 )
 
@@ -17,7 +20,15 @@ func main() {
 
 	mux.HandleFunc("/health", getHealth)
 
-	repo := todo.NewMemoryRepo()
+	cfg := config.Load()
+
+	ctx := context.Background()
+	dbpool, err := db.New(ctx, cfg.DatabaseUrl)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	repo := todo.NewPostgresRepo(dbpool)
 	service := todo.NewService(repo)
 	handler := todo.Newhandler(service)
 
@@ -34,7 +45,7 @@ func main() {
 	})
 
 	log.Println("Starting on port :8080")
-	err := http.ListenAndServe(":8080", mux)
+	err = http.ListenAndServe(":8080", mux)
 	if err != nil {
 		log.Fatal(err)
 	}
