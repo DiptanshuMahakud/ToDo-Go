@@ -45,7 +45,6 @@ func main() {
 		default:
 			w.WriteHeader(http.StatusMethodNotAllowed)
 		}
-
 	})
 
 	// log.Println("Starting on port :8080")
