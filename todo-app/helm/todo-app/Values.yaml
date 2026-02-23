@@ -1,0 +1,11 @@
+image:
+  repository: todo-api
+  tag: local
+  pullPolicy: IfNotPresent
+
+service:
+  port: 8080
+
+env: 
+  HTTP_PORT: "8080"
+  DATABASE_URL: ""
